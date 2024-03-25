@@ -96,18 +96,7 @@ class AntiPolls extends Client {
     }
 
     public async catch(err: Error) {
-        // const errorEmbed = new EmbedBuilder()
-        //     .setTitle("Unhandled Rejection")
-        //     .setDescription(`\`\`\`xl\n${err}\n${new Error().stack}\`\`\``)
-        //     .setColor("DarkRed")
-        //     .setTimestamp();
-        //
-        // this.rest.post(process.env.WEBHOOK_URL as `/${string}`, {
-        //     body: {
-        //         embeds: [errorEmbed]
-        //     },
-        //     auth: false,
-        // });
+        console.log(err);
     }
 }
 
