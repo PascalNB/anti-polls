@@ -1,7 +1,12 @@
-import { Client, CommandInteraction, GatewayDispatchEvents, type APIApplicationCommandOption, EmbedBuilder } from "discord.js";
-import { join } from "path";
-import { readdir, stat } from "node:fs/promises";
-import { Redis } from "ioredis";
+import {
+    Client,
+    CommandInteraction,
+    GatewayDispatchEvents,
+    type APIApplicationCommandOption,
+    EmbedBuilder
+} from "discord.js";
+import {join} from "path";
+import {readdir, stat} from "node:fs/promises";
 
 class AntiPolls extends Client {
     public commands = new Map<string, {
@@ -18,46 +23,22 @@ class AntiPolls extends Client {
         run: (client: Client, data: any) => void;
     }>();
 
-    public redis = new Redis({
-        host: process.env.REDIS_HOST,
-        port: parseInt(process.env.REDIS_PORT ?? "6379"),
-        password: process.env.REDIS_PASSWORD,
-        db: parseInt(process.env.REDIS_DB ?? "0")
-    });
-
     public commandsFolder = join(import.meta.dirname, "../commands");
     public eventsFolder = join(import.meta.dirname, "../events");
-    private connectAttempts = 0;
-    private maxConnectAttempts = 5;
 
     public constructor() {
         super({
             intents: ["MessageContent", "GuildMessages", "Guilds", "GuildMembers"]
         });
 
-        this.redis.on("close", () => {
-            console.log(`Redis connection closed, ${this.connectAttempts}/${this.maxConnectAttempts} attempts`);
-
-            if (this.connectAttempts >= this.maxConnectAttempts) {
-                this.redis.connect();
-
-                this.connectAttempts++;
-            }
-        });
-
-        this.redis.on("connect", () => {
-            console.log("Redis connection established");
-
-            this.connectAttempts = 0;
-        });
     }
 
     public async register() {
         // Register commands
         const commandFiles = await this.recursiveRegister(this.commandsFolder);
         for (const file of commandFiles) {
-            const { name, description, execute, defaultMemberPermissions, options } = await import(file);
-            this.commands.set(name, { description, execute, name, defaultMemberPermissions, options });
+            const {name, description, execute, defaultMemberPermissions, options} = await import(file);
+            this.commands.set(name, {description, execute, name, defaultMemberPermissions, options});
 
             console.log(`Registered command ${name}`);
         }
@@ -65,13 +46,13 @@ class AntiPolls extends Client {
         // Register events
         const eventFiles = await this.recursiveRegister(this.eventsFolder);
         for (const file of eventFiles) {
-            const { raw, type, run } = await import(file);
-            this.events.set(type, { raw, type, run });
+            const {raw, type, run} = await import(file);
+            this.events.set(type, {raw, type, run});
 
             console.log(`Registered event ${type}`);
         }
 
-        for (const [type, { raw, run }] of this.events) {
+        for (const [type, {raw, run}] of this.events) {
             if (raw) {
                 this.ws.on(type as GatewayDispatchEvents, (data) => run(this, data));
             } else {
@@ -115,18 +96,18 @@ class AntiPolls extends Client {
     }
 
     public async catch(err: Error) {
-        const errorEmbed = new EmbedBuilder()
-            .setTitle("Unhandled Rejection")
-            .setDescription(`\`\`\`xl\n${err}\n${new Error().stack}\`\`\``)
-            .setColor("DarkRed")
-            .setTimestamp();
-
-        this.rest.post(process.env.WEBHOOK_URL as `/${string}`, {
-            body: {
-                embeds: [errorEmbed]
-            },
-            auth: false,
-        });
+        // const errorEmbed = new EmbedBuilder()
+        //     .setTitle("Unhandled Rejection")
+        //     .setDescription(`\`\`\`xl\n${err}\n${new Error().stack}\`\`\``)
+        //     .setColor("DarkRed")
+        //     .setTimestamp();
+        //
+        // this.rest.post(process.env.WEBHOOK_URL as `/${string}`, {
+        //     body: {
+        //         embeds: [errorEmbed]
+        //     },
+        //     auth: false,
+        // });
     }
 }
 
