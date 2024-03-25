@@ -1,5 +1,5 @@
-import { GatewayDispatchEvents, Message, PermissionFlagsBits } from "discord.js";
-import { type GatewayMessageCreateDispatchData } from "discord-api-types/gateway";
+import {GatewayDispatchEvents, Message, PermissionFlagsBits} from "discord.js";
+import {type GatewayMessageCreateDispatchData} from "discord-api-types/gateway";
 import type AntiPolls from "../../utils/client.ts";
 
 export const raw = true;

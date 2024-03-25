@@ -30,7 +30,6 @@ class AntiPolls extends Client {
         super({
             intents: ["MessageContent", "GuildMessages", "Guilds"]
         });
-
     }
 
     public async register() {
