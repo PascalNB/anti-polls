@@ -1,6 +1,6 @@
 # Anti Poll Discord Bot
 
-Discord released poll's to 10% of servers on 3/21/2024 without a permission tied to it that can be easily disabled. 
+Discord released polls to 10% of servers on 3/21/2024 without a permission tied to it. 
 This bot is a temporary solution to disable polls in your server.
 
 The bot will delete all polls sent by members.
