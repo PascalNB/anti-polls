@@ -10,19 +10,13 @@ export async function run(client: AntiPolls, data: GatewayMessageCreateDispatchD
 }) {
     if (!("poll" in data)) return;
 
-    console.log("Poll discovered");
-
     // @ts-expect-error we are fine creating it
     const msg = new Message(client, data) as Message;
 
-    if (!msg.inGuild()) return;
+    if (!msg.inGuild() || msg.member!.permissions.has(PermissionFlagsBits.ManageMessages)) return;
 
     const doIGotPermsManageMessagesPerms = msg.guild.members.me?.permissions.has(PermissionFlagsBits.ManageMessages);
 
-    if (doIGotPermsManageMessagesPerms) {
-        msg.delete().catch(client.catch);
-    } else {
-        console.log("missing permission")
-    }
+    if (doIGotPermsManageMessagesPerms) msg.delete().catch(client.catch);
 
 }
