@@ -28,7 +28,7 @@ class AntiPolls extends Client {
 
     public constructor() {
         super({
-            intents: ["MessageContent", "GuildMessages", "Guilds", "GuildMembers"]
+            intents: ["MessageContent", "GuildMessages", "Guilds"]
         });
 
     }
